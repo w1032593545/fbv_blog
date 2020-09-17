@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 django = "==2.2.15"
 mysqlclient = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"
