@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我</title>
+    <link rel="stylesheet" href="{% static 'bootstrap-custom\css\custom.bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+    <style type="text/css">
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 200%;
+            background-color: #EFEFC2;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .80;
+            filter: alpha(opacity=50);
+        }
+
+        .white_content {
+            border-radius: 20px;
+            display: none;
+            position: absolute;
+            top: 30%;
+            left: 40%;
+            background-color: #FFFFFF;
+            z-index: 1002;
+            /* 数字的大小指明了div的相对层，数字大的在上层 */
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar navbar-inverse navbar-fixed-top" role="banner">
+    <div class="container">
+        <!-- 导航组件 -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".bs-nav-collapse">
+                <span class="sr-only">响应式导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="logo-link" href="{% url 'blog:blog_index' %}"><img src="{% static 'img/logo.png' %}" alt=""></a>
+        </div>
+        <nav class="collapse navbar-collapse bs-nav-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'blog:blog_index' %}">首页</a></li>
+                <li><a href="{% url 'blog:blog_contact' %}">联系我</a></li>
+                <li class="active"><a href="{% url 'blog:blog_about' %}">关于我</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="search" method="post" action="{% url 'blog:blog_index' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" name="keyword" placeholder="文章标题或者作者名">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<div id="body" class="container">
+    <h1>关于我</h1>
+    <div class="row">
+        <div class="col-md-3">
+            <img src="https://ss1.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/imgad/pic/item/80cb39dbb6fd5266ac09511fa318972bd407369e.jpg"
+                 alt="" class="img-thumbnail img-responsive">
+        </div>
+        <div class="col-md-9">
+            <p>许嵩（Vae），1986年5月14日生于安徽省合肥市，中国内地流行乐男歌手、词曲创作人、音乐制作人，现任海蝶音乐公司（现为太合音乐集团）音乐总监，毕业于安徽医科大学。</p>
+            <p>2009年1月发行首张词曲全创作专辑《自定义》
+                。2010年1月发行第二张词曲全创作专辑《寻雾启示》。2011年4月发行第三张词曲全创作专辑《苏格拉没有底》。2012年7月发行第四张词曲全创作专辑《梦游计》。2014年8月发行第五张词曲全创作专辑《不如吃茶去》。2016年6月发行第六张词曲全创作专辑《青年晚报》。2018年7月发行第七张词曲全创作专辑《寻宝游戏》。</p>
+            <p>《英雄联盟》致力于推动全球电子竞技的发展，除了联动各赛区发展职业联赛、打造电竞体系之外，每年还会举办“季中冠军赛”“全球总决赛”“All Star全明星赛”三大世界级赛事，形成了自己独有的电子竞技文化。</p>
+            <p>
+                2006年起许嵩开始发表音乐作品，至2020年已成功发行七张个人原创专辑以及近四十首原创单曲，所有歌曲由许嵩创作词曲及音乐制作。截至2020年，许嵩已获得中歌榜、中国华鼎奖、东方风云榜、音乐风云榜等权威音乐榜单颁发的“最佳创作歌手奖”、“最佳唱作人奖”等个人奖项共19次
+                ；应邀为游戏、影视剧等创作主题曲包括《雨幕》（新天龙八部端游主题曲）、《千古》（电视剧《花千骨》片头曲）等歌曲共15首；五登央视舞台，七上卫视晚会献唱 。</p>
+        </div>
+    </div>
+    <p class="social-buttons text-center">
+        <a href="https://weibo.com/vae" type="button" class="btn btn-primary btn-lg">访问我的微博</a>
+        <a type="button" class="btn btn-primary btn-lg"  id='add'>添加我的微信</a>
+    </p>
+    <div id="light_weixin" class="white_content">
+        <img src="{% static 'img/img.png' %}" alt="" width="300px" height="400px">
+    </div>
+    <div id="fade" class="black_overlay"></div>
+    <p class="lead text-center">以下是我歌曲</p>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="thumbnail">
+                <a href="">
+                    <img src="https://y.gtimg.cn/music/photo_new/T002R300x300M0000035f8nw11cjkf_1.jpg?max_age=2592000"
+                         alt="" class="img-responsive">
+                </a>
+                <div class="text-center">
+                    <h4>素颜</h4>
+                    <p>许嵩经典歌曲</p>
+                    <a href="https://y.qq.com/n/yqq/song/004Gq0xE1YC8xp.html" class="btn btn-primary btn-lg">去听歌</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="thumbnail">
+                <a href="">
+                    <img src="https://y.gtimg.cn/music/photo_new/T002R300x300M0000048UsY21HmoMU_1.jpg?max_age=2592000"
+                         alt="" class="img-responsive">
+                </a>
+                <div class="text-center">
+                    <h4>千百度</h4>
+                    <p>许嵩经典歌曲</p>
+                    <a href="https://y.qq.com/n/yqq/song/000rys863Az3Us.html" class="btn btn-primary btn-lg">去听歌</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="thumbnail">
+                <a href="">
+                    <img src="https://y.gtimg.cn/music/photo_new/T002R300x300M000001jmC6x1RMfh0_2.jpg?max_age=2592000"
+                         alt="" class="img-responsive">
+                </a>
+                <div class="text-center">
+                    <h4>你若成风</h4>
+                    <p>许嵩经典歌曲</p>
+                    <a href="https://y.qq.com/n/yqq/song/001xjGaz08GAGC.html" class="btn btn-primary btn-lg">去听歌</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <hr>
+        <p class="text-center">Copyright &copy; Powered By IronMan - 2020</p>
+    </div>
+</footer>
+
+</body>
+
+<script src="{% static 'jquery-3.5.1.min.js' %}"></script>
+<script src="{% static 'bootstrap-custom\js\bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $(function(){
+        $('#add').click(function(){
+            $('#light_weixin').css({display:'block'});
+            $('#fade').css({display:'block'});
+        })
+        $('#fade').click(function(){
+            $('#light_weixin').css({display:'none'});
+            $('#fade').css({display:'none'});
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,189 @@
+{% load static comments %}
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情页</title>
+    <link rel="stylesheet" href="{% static 'bootstrap-custom\css\custom.bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css\blog.css' %}">
+</head>
+
+<body>
+<header class="navbar navbar-inverse navbar-fixed-top" role="banner">
+    <div class="container">
+        <!-- 导航组件 -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".bs-nav-collapse">
+                <span class="sr-only">响应式导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="logo-link" href="{% url 'blog:blog_index' %}"><img src="{% static 'img/logo.png' %}" alt=""></a>
+        </div>
+        <nav class="collapse navbar-collapse bs-nav-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'blog:blog_index' %}">首页</a></li>
+                <li><a href="{% url 'blog:blog_contact' %}">联系我</a></li>
+                <li><a href="{% url 'blog:blog_about' %}">关于我</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="search" method="post" action="{% url 'blog:blog_index' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" name="keyword" placeholder="文章标题或者作者名">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<div class="container" id="body">
+    <div class="col-md-8">
+        <article>
+            <h2><a href="#">{{ single_article.title }}</a></h2>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                    {% for category in single_article.category.all %}
+                        &nbsp;&nbsp; <a href="">{{ category }}</a>
+                    {% endfor %}
+                    <span class="glyphicon glyphicon-tags"></span>
+                    {% for tag in single_article.tags.all %}
+                        &nbsp;&nbsp; <a href="">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    {% get_comment_count for single_article as comment_count %}
+                    <span class="glyphicon glyphicon-comment"></span>&nbsp;&nbsp; <a href="">{{ comment_count }}条评论</a>
+                    <span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp; <a
+                        href="">{{ single_article.created_time }}</a>
+                </div>
+            </div>
+            <hr>
+            <img src="{{ single_article.img.url }}" alt="" class="img-responsive">
+            <br/>
+            <p class="lead">
+                {{ single_article.abstract|safe }}
+            </p>
+            <p>
+                {{ single_article.toc|safe }}
+                {{ single_article.content|safe }}
+            </p>
+
+        </article>
+        <ul class="pager">
+            <li class="previous"><a href="{% url 'blog:blog_index' %}">返回主页</a></li>
+        </ul>
+
+        <div class="well">
+            <h4>欢迎评论</h4>
+            {% get_comment_form for single_article as form %}
+            <form class="clearfix" action="{% comment_form_target %}" method="post">
+                <div id="id_comment" class="form-group col-md-12">
+                    <label for="exampleInputPassword1">评论内容</label>
+                    <textarea name="comment" class="form-control" rows="3"></textarea>
+                </div>
+                {% csrf_token %}
+                {{ form.content_type }}
+                {{ form.object_pk }}
+                {{ form.timestamp }}
+                {{ form.security_hash }}
+                <div class="form-group text-right col-md-12">
+                    <input type="hidden" name="next" value="{% url 'blog:blog_detail' single_article.id %}"/>
+                    <button type="submit" class="btn btn-primary btn-lg">提交评论</button>
+                </div>
+            </form>
+        </div>
+
+        <ul id="comments" class="comments">
+            {% get_comment_list for single_article as comment_list %}
+            {% for comment in comment_list %}
+                <li class="comment">
+                    <div class="clearfix">
+                        <h4 class="pull-left">{{ comment.user }}</h4>
+                        <p class="pull-right">{{ comment.submit_date }}</p>
+                    </div>
+                    <p>
+                        <em>{{ comment }}</em>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <div class="well text-center">
+            <p class="lead">不想错过好文章，赶紧订阅吧</p>
+            <a href="{% url 'blog:rss' %}" class="btn btn-primary btn-lg">订阅我的博客</a>
+        </div>
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <h4>最新文章</h4>
+            </div>
+            <!-- List group -->
+            <ul class="list-group">
+                {% for article in all_articles|slice:':10' %}
+                    <li class="list-group-item"><a href="{% url 'blog:blog_detail' article.id %}"><b>{{ article }}</b><i
+                            style="float: right">{{ article.created_time }}</i></a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- 分类 -->
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <h4>分类</h4>
+            </div>
+            <!-- List group -->
+            <ul class="list-group">
+                {% for category in single_article.category.all %}
+                    <li class="list-group-item"><a
+                            href="{% url 'blog:blog_index' %}?c_id={{ category.id }}">{{ category }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- tags -->
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <h4>标签云</h4>
+            </div>
+            <div class="panel-body">
+                <ul class="list-inline">
+                    {% for tag in single_article.tags.all %}
+                        <li><a href="{% url 'blog:blog_index' %}?t_id={{ tag.id }}">{{ tag }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 最新评论 -->
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <h4>最新评论</h4>
+            </div>
+            <!-- List group -->
+            <ul class="list-group">
+                {% for comment in comment_list|slice:':10' %}
+                    <li class="list-group-item"><a href="">{{ comment }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="container">
+        <hr>
+        <p class="text-center">Copyright &copy; Powered By Bruce - 2020</p>
+    </div>
+</footer>
+</body>
+
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<script src="{% static 'bootstrap-custom\js\bootstrap.min.js' %}"></script>
+
+</html>
